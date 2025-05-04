@@ -1,31 +1,24 @@
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
-import Caisse from './components/Caisse';
-import Reglages from './components/Reglages';
-import Historique from './components/Historique';
-import './App.css'; // Nouveau fichier de style
+import CreateUser from './CreateUser'
+// plus tard on ajoutera UploadDoc, etc.
 
 function App() {
+  const [user, setUser] = useState(null)
+
+  // identifie si c'est un admin par son email (exemple temporaire)
+  const isAdmin = user?.email === 'ton.email@admin.com'
+
   return (
-    <Router>
-      <div className="navbar">
-        <NavLink to="/" className="navlink" end>
-          🛒 Caisse
-        </NavLink>
-        <NavLink to="/reglages" className="navlink">
-          ⚙️ Réglages
-        </NavLink>
-        <NavLink to="/historique" className="navlink">
-          🧾 Historique
-        </NavLink>
-      </div>
-
-      <Routes>
-        <Route path="/" element={<Caisse />} />
-        <Route path="/reglages" element={<Reglages />} />
-        <Route path="/historique" element={<Historique />} />
-      </Routes>
-    </Router>
-  );
+    <div className="App">
+      {!user ? (
+        <Login onLogin={setUser} />
+      ) : isAdmin ? (
+        <>
+          <h2>Bienvenue admin</h2>
+          <CreateUser />
+        </>
+      ) : (
+        <p>Bienvenue patient {user.email}</p>
+      )}
+    </div>
+  )
 }
-
-export default App;
