@@ -10,11 +10,16 @@ export default function UploadDoc() {
 
   useEffect(() => {
     const fetchPatients = async () => {
-      const { data, error } = await supabase.auth.admin.listUsers()
+      const { data, error } = await supabase
+        .from('patients')
+        .select('id, email, full_name')
+        .order('email', { ascending: true }
+
+        )
       if (error) {
         console.error('Erreur de récupération des utilisateurs :', error)
       } else {
-        setPatients(data.users)
+        setPatients(data)
       }
     }
 
@@ -57,9 +62,9 @@ export default function UploadDoc() {
           onChange={(e) => setSelectedPatientId(e.target.value)}
         >
           <option value="">-- Sélectionner --</option>
-          {patients.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.email}
+          {patients.map((patient) => (
+            <option key={patient.id} value={patient.id}>
+              {patient.full_name} - {patient.email}
             </option>
           ))}
         </select>
