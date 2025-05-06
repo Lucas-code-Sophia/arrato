@@ -27,6 +27,7 @@ export default function Login({ onLogin }) {
   }
 
   return (
+    <div className="login-page">
     <div className="login-container">
       <h2 className="login-title">
         Connexion à votre espace
@@ -66,5 +67,6 @@ export default function Login({ onLogin }) {
         {error && <p className="login-error">{error}</p>}
       </form>
     </div>
+  </div>
   )
 }

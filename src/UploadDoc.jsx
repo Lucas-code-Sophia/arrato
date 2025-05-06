@@ -5,6 +5,7 @@ import './UploadDoc.css'
 export default function UploadDoc() {
   const [patients, setPatients] = useState([])
   const [selectedPatientId, setSelectedPatientId] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [file, setFile] = useState(null)
   const [message, setMessage] = useState('')
 
@@ -13,11 +14,10 @@ export default function UploadDoc() {
       const { data, error } = await supabase
         .from('patients')
         .select('id, email, full_name')
-        .order('email', { ascending: true }
+        .order('email', { ascending: true })
 
-        )
       if (error) {
-        console.error('Erreur de récupération des utilisateurs :', error)
+        console.error('Erreur de récupération des patients sur Supabase :', error)
       } else {
         setPatients(data)
       }
@@ -30,17 +30,17 @@ export default function UploadDoc() {
     e.preventDefault()
     setMessage('')
 
-    if (!file || !selectedPatientId) {
-      setMessage('Veuillez choisir un patient et un fichier.')
+    if (!file || !selectedPatientId || !selectedCategory) {
+      setMessage('Veuillez choisir un patient, une catégorie et un fichier.')
       return
     }
 
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}.${fileExt}`
-    const filePath = `${selectedPatientId}/${fileName}`
+    const filePath = `${selectedPatientId}/${selectedCategory}/${fileName}`
 
     const { error } = await supabase.storage
-      .from('documents')
+      .from('documents-ladietdarrate')
       .upload(filePath, file)
 
     if (error) {
@@ -48,6 +48,7 @@ export default function UploadDoc() {
     } else {
       setMessage('Fichier envoyé avec succès 🎉')
       setFile(null)
+      setSelectedCategory('')
     }
   }
 
@@ -69,12 +70,25 @@ export default function UploadDoc() {
           ))}
         </select>
 
+        <label>Choisir une catégorie :</label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">-- Catégorie --</option>
+          <option value="bilans">🧾 Bilan nutritionnel</option>
+          <option value="plans">🍽️ Plans alimentaires</option>
+          <option value="ressources">📚 Ressources</option>
+          <option value="comptes-rendus">💬 Comptes-rendus</option>
+        </select>
+
         <label>Fichier :</label>
         <input
           type="file"
           accept="application/pdf,image/*"
           onChange={(e) => setFile(e.target.files[0])}
         />
+        {file && <p className="upload-selected-file">Fichier sélectionné : {file.name}</p>}
 
         <button type="submit" className="upload-button">
           Envoyer

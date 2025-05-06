@@ -3,8 +3,9 @@ import { supabase } from './supabase.js'
 import CreateUser from './CreateUser'
 import Login from './Login'
 import UploadDoc from './UploadDoc'
-import PatientDocuments from './PatientsDocuments'
 import Layout from './Layout'
+import PatientDashboard from './PatientDashboard'
+import PatientLayout from './PatientLayout.jsx'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -31,37 +32,39 @@ function App() {
     setUser(null)
   }
 
-  return (
-    <Layout>
-      {!user ? (
+  // Cas 1 : pas connecté → Layout général avec Login
+  if (!user) {
+    return (
         <Login onLogin={setUser} />
-      ) : (
-        <>
-          <div className="flex justify-between items-center mb-4">
-            <p className="text-sm">Connecté : {user.email}</p>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-1 rounded text-sm"
-            >
-              Se déconnecter
-            </button>
-          </div>
+    )
+  }
 
-          {isAdmin ? (
-            <>
-              <h2 className="text-xl font-bold mb-4">Bienvenue admin</h2>
-              <CreateUser />
-              <UploadDoc />
-            </>
-          ) : (
-            <>
-              <p className="mb-2 font-medium">Bienvenue patient {user.email}</p>
-              <PatientDocuments user={user} />
-            </>
-          )}
-        </>
-      )}
-    </Layout>
+  // Cas 2 : admin → Layout général
+  if (isAdmin) {
+    return (
+      <Layout>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-sm">Connecté : {user.email}</p>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-1 rounded text-sm"
+          >
+            Se déconnecter
+          </button>
+        </div>
+
+        <h2 className="text-xl font-bold mb-4">Bienvenue admin</h2>
+        <CreateUser />
+        <UploadDoc />
+      </Layout>
+    )
+  }
+
+  // Cas 3 : patient → PatientLayout personnalisé
+  return (
+    <PatientLayout>
+      <PatientDashboard user={user} onLogout={handleLogout} />
+    </PatientLayout>
   )
 }
 

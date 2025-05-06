@@ -11,10 +11,10 @@ export default function PatientDocuments({ user }) {
       setLoading(true)
       const { data, error } = await supabase.storage
         .from('documents')
-        .list(user.id + '/', { limit: 100 })
+        .list(`${user.id}/`, { limit: 100, offset: 0 })
 
       if (error) {
-        console.error('Erreur lors du listing :', error.message)
+        console.error('Erreur chargement des fichiers sur Supabase :', error.message)
       } else {
         setDocuments(data)
       }
@@ -22,12 +22,13 @@ export default function PatientDocuments({ user }) {
     }
 
     fetchDocuments()
-  }, [user])
+  }, [user.id])
 
   const getPublicUrl = (fileName) => {
     return supabase.storage
       .from('documents')
-      .getPublicUrl(`${user.id}/${fileName}`).data.publicUrl
+      .getPublicUrl(`${user.id}/${fileName}`)
+      return data.publicUrl
   }
 
   return (

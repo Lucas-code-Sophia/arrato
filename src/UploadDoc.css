@@ -63,4 +63,11 @@
     text-align: center;
     font-size: 0.95rem;
     color: #2e7d32;
-  }  
+  }
+  
+  .upload-selected-file {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: #555;
+  }
+  
