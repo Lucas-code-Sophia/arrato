@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from './supabase.js'
 import './PatientDashboard.css'
 
@@ -54,7 +54,7 @@ function DocumentList({ user, category }) {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useState(() => {
+  useEffect(() => {
     const fetch = async () => {
       const { data, error } = await supabase.storage
         .from('documents-ladietdarrate')
@@ -84,15 +84,30 @@ function DocumentList({ user, category }) {
       ) : files.length === 0 ? (
         <p>Aucun document dans cette catégorie.</p>
       ) : (
-        <ul className="document-list">
-          {files.map((file) => (
-            <li key={file.name}>
-              <a href={getPublicUrl(file.name)} target="_blank" rel="noopener noreferrer">
-                {file.name}
+              <ul className="document-list">
+        {files.map((file) => {
+          const url = getPublicUrl(file.name)
+          return (
+            <li key={file.name} className="document-preview">
+              <p>{file.name}</p>
+              {file.name.endsWith('.pdf') ? (
+                <iframe src={url} width="400px" height="400px" />
+              ) : (
+                <img src={url} alt={file.name} style={{ maxWidth: '400px', maxHeight: '400px' }} />
+              )}
+              <a
+              href={url}
+              download
+              className="download-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              >
+                ⬇️ Télécharger
               </a>
             </li>
-          ))}
-        </ul>
+            )
+          })}
+      </ul>
       )}
     </div>
   )

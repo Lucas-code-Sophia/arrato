@@ -91,3 +91,29 @@
     background: #ffcdd2;
   }
   
+  .document-preview {
+    margin-bottom: 2rem;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #fafafa;
+    max-width: 400px;
+    max-height: 400px;
+  }
+  
+  .download-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #43a047;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .download-link:hover {
+    background-color: #388e3c;
+  }
+  
